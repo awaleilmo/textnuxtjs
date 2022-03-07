@@ -504,6 +504,19 @@
 
       async onSubmitPost(event: { preventDefault: () => void }) {
         event.preventDefault()
+        var checks = this.posts.body
+        if(checks.length > 500){
+          this.alerts = 'danger'
+          this.alerts_message = `can't be more than 500 characters`
+          this.modal_alert = true
+          return;
+        }
+        if(this.posts.title === '' || this.posts.body === ''){
+          this.alerts = 'danger'
+          this.alerts_message = `field cannot be empty`
+          this.modal_alert = true
+          return;
+        }
         let submit = await this.$axios.post(`users/${this.form.id}/posts`, this.posts)
         if(submit){
           this.alerts = 'success'
