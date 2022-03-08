@@ -92,27 +92,27 @@
                   :items="itemPosts"
                   :fields="columnPosts"
                   :busy="loadings"
-                  :filter="filter"
+                  :filter="filterPost"
                   :tbody-td-class="rowClass"
-                  :per-page="perPage"
+                  :per-page="perPagePost"
                   select-mode="multi"
                   selectable
                   fixed
                   class="text-left"
-                  :current-page="currentPage"
+                  :current-page="currentPagePost"
                   caption-top
                   @row-selected="onRowSelected"
                 >
                   <template #table-caption>
                     <b-row>
                       <b-col cols="2">
-                        <b-form-select v-model="perPage" :options="options"/>
+                        <b-form-select v-model="perPagePost" :options="options"/>
                       </b-col>
                       <b-col>
                         <b-input-group>
                           <b-form-input
                             id="filter-input"
-                            v-model="filter"
+                            v-model="filterPost"
                             type="search"
                             placeholder="Search"
                           />
@@ -131,6 +131,13 @@
                     />
                   </template>
                 </b-table>
+                <b-pagination
+                  v-model="currentPagePost"
+                  :total-rows="rowsPost"
+                  :per-page="perPagePost"
+                  aria-controls="my-table"
+                  align="center"
+                />
               </b-col>
             </b-row>
           </b-form-group>
@@ -230,9 +237,9 @@
           </b-col>
         </b-form>
       </b-modal>
-      <b-modal v-model="modal_alert" centered @hide="!modal_alert" hide-backdrop content-class="shadow" :header-bg-variant="alerts" title="Alert">
+      <b-modal v-model="modal_alert" centered @hide="!modal_alert" ok-only header-text-variant="light" hide-backdrop content-class="shadow" :header-bg-variant="alerts" title="Alert">
         <p class="my-2">
-         {{ alerts_message }}
+          <strong>{{ alerts_message }}</strong>
         </p>
       </b-modal>
       <b-modal v-model="modal_confirm" header-text-variant="light" centered @ok="actDelete" @hide="!modal_confirm" header-bg-variant="danger" hide-backdrop content-class="shadow" title="Confirm Delete">
@@ -390,6 +397,7 @@
       ],
       modalnewuser: false,
       filter: null,
+      filterPost: null,
       loadings: true,
       selected: [],
       items: [],
@@ -397,6 +405,7 @@
       isnew: true,
       deluser: true,
       perPage: 5,
+      perPagePost: 5,
       options: [
         {value: 5, text: '5'},
         {value: 10, text: '10'},
@@ -411,6 +420,7 @@
       },
       postModal:"modal",
       currentPage: 1,
+      currentPagePost: 1,
     }),
 
     methods: {
@@ -551,6 +561,9 @@
     computed: {
       rows() {
         return this.items.length
+      },
+      rowsPost() {
+        return this.itemPosts.length
       }
     }
   })
