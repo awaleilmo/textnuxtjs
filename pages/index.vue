@@ -342,7 +342,7 @@
       modal_alert:false,
       modal_confirm:false,
       form:{name:null, email:null, gender:null, status:null, id:null},
-      posts:{user_id:null,title:null,body:null},
+      posts:{user_id:null, title:null, body:''},
       column: [
         {
           key: 'id',
@@ -434,21 +434,23 @@
 
       async actDelete(){
         this.loadings = true
-        for(let i = 0; i < this.selected.length; i++){
-          let delet = this.deluser ? await this.$axios.$delete(`users/${this.selected[i].id}`) : await this.$axios.$delete(`posts/${this.selected[i].id}`)
+        for(let i of this.selected){
+          this.form = i
+          let delet = this.deluser ? await this.$axios.$delete(`users/${this.form.id}`) : await this.$axios.$delete(`posts/${this.form.id}`)
           if(!delet){
             this.alerts = 'success'
             this.alerts_message = 'success'
             this.modal_alert = true
           }else{
             this.alerts = 'danger'
-            this.alerts_message = `Failed delete id ${this.selected[i].id}`
+            this.alerts_message = `Failed delete id ${this.form.id}`
             this.modal_alert = true
           }
         }
         await this.datauser()
         await this.listpost()
         this.loadings = false
+        this.onReset()
       },
 
       onRowSelected(items: never[]) {
@@ -504,7 +506,7 @@
 
       async onSubmitPost(event: { preventDefault: () => void }) {
         event.preventDefault()
-        var checks = this.posts.body
+        let checks = this.posts.body
         if(checks.length > 500){
           this.alerts = 'danger'
           this.alerts_message = `can't be more than 500 characters`
